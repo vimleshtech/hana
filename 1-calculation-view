@@ -1,0 +1,77 @@
+/********* Begin Procedure Script ************/
+
+BEGIN
+
+   region = CE_COLUMN_TABLE(“HANA_TEST”.“REGION”,
+
+             [      “REGION_ID” ,
+
+                           “REGION_NAME” ,
+
+                           “SUB_REGION_NAME”]);
+
+   sales =  CE_COLUMN_TABLE(“HANA_TERT”.“SALES”,
+
+               [    “REGION_ID”,                       
+
+                             “PRODUCT_ID”,
+
+                             “SALES_AMOUNT” ]);
+
+                
+
+   product = CE_COLUMN_TABLE(“HANA_TEST”.“PRODUCT”,                                        
+
+             [  “PRODUCT_ID”,
+
+                         “PRODUCT_NAME” ]);
+
+                  
+
+   join1 = CE_JOIN(:region, :sales,
+
+           [“REGION_ID”],
+
+           [“REGION_ID”,
+
+                      “SUB_REGION_NAME”,
+
+                      “PRODUCT_ID”,
+
+                      “SALES_AMOUNT” ]);
+
+   join2 = CE_JOIN(:join1, :product,
+
+           [“PRODUCT_ID”],
+
+           [“PRODUCT_ID”,
+
+                      “PRODUCT_NAME”,
+
+                      “REGION_ID”,
+
+                      “SUB_REGION_NAME”,
+
+                      “SALES_AMOUNT”]);
+
+                    
+
+   p_out = CE_PROJECTION(:join2,
+
+           [“PRODUCT_ID”,
+
+                      “PRODUCT_NAME”,
+
+                      “REGION_ID”,
+
+                      “SUB_REGION_NAME”,
+
+                      “SALES_AMOUNT”,
+
+            CE_CALC(‘”SALES_AMOUNT”*0.3’,DOUBLE) as “MARGIN” ]);                   
+
+          
+
+END;
+
+/********* End Procedure Script ************/
